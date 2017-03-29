@@ -14,12 +14,12 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) =>{
-    res.send(toDos);
+    res.send('toDos');
 });
 
 app.delete('/', (req, res) => {
   res.status(204).send('Success');
-})
+});
 
 app.listen(process.env.PORT || 8080);
 
