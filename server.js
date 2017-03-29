@@ -14,7 +14,7 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) =>{
-    res.json(toDos);
+    res.send(toDos);
 });
 
 app.delete('/', (req, res) => {
