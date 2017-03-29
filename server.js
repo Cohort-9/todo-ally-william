@@ -17,9 +17,9 @@ app.get('/', (req, res) =>{
     res.send('toDos');
 });
 
-// app.delete('/', (req, res) => {
-//   res.status(204).send('Success');
-// });
+app.delete('/', (req, res) => {
+  res.status(204).send('Success');
+});
 
 app.listen(process.env.PORT || 8080);
 
