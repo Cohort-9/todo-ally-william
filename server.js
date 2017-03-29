@@ -22,9 +22,9 @@ app.get('/', (req, res) =>{
 // app.post('/', (req, res) => {
 //   res.send(req.body);
 // });
-// app.delete('/', (req, res) => {
-//   res.status(204).json({message: 'success'});
-// });
+app.delete('/', (req, res) => {
+  res.send({message: 'success'});
+});
 
 app.listen(process.env.PORT || 8080);
 
