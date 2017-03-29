@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 
-let toDos;
+let toDos = [];
 
 app.use(express.static('public'));
 
@@ -14,7 +14,7 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) =>{
-    res.JSON(toDos);
+    res.json(toDos);
 });
 
 app.delete('/', (req, res) => {
