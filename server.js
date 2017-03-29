@@ -19,12 +19,12 @@ app.get('/', (req, res) =>{
     res.send('toDos');
 });
 
-// app.post('/', (req, res) => {
-//   res.send(req.body);
-// });
+app.post('/', (req, res) => {
+  res.json(req.body);
+});
 
 app.delete('/', (req, res) => {
-  res.send({message: 'delete success'});
+  res.send('delete success');
 });
 
 app.listen(process.env.PORT || 8080);
