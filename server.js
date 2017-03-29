@@ -22,8 +22,9 @@ app.get('/', (req, res) =>{
 // app.post('/', (req, res) => {
 //   res.send(req.body);
 // });
+
 app.delete('/', (req, res) => {
-  res.send({message: 'success'});
+  res.send({message: 'delete success'});
 });
 
 app.listen(process.env.PORT || 8080);
