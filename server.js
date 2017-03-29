@@ -1,6 +1,8 @@
-var express = require('express');
+const express = require('express');
 
-var app = express();
+const app = express();
+
+let toDos;
 
 app.use(express.static('public'));
 
@@ -12,8 +14,12 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) =>{
-    res.send('This is a get endpoint');
+    res.JSON(toDos);
 });
+
+app.delete('/', (req, res) => {
+  res.status(204).send('Success');
+})
 
 app.listen(process.env.PORT || 8080);
 
