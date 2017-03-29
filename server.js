@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 
-let toDos = [];
+// let toDos = [];
 
 app.use(express.static('public'));
 
