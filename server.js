@@ -19,9 +19,9 @@ app.get('/', (req, res) =>{
     res.send('toDos');
 });
 
-app.post('/', (req, res) => {
-  res.send(req.body);
-});
+// app.post('/', (req, res) => {
+//   res.send(req.body);
+// });
 // app.delete('/', (req, res) => {
 //   res.status(204).json({message: 'success'});
 // });
