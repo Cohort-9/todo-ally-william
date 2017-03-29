@@ -4,7 +4,7 @@ const app = express();
 
 const bodyparser = require('body-parser');
 
-// let toDos = [];
+let toDos = [];
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -16,7 +16,7 @@ app.use(bodyparser.json());
 
 
 app.get('/', (req, res) =>{
-    res.send('toDos');
+    res.json(toDos);
 });
 
 app.post('/', (req, res) => {
