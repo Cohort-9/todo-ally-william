@@ -3,8 +3,8 @@ const {DATABASE_URL} = process.env;
 module.exports = {
   DEV: {
     client: 'pg',
-    connection: DATABASE_URL,
-    debug: true
+    connection: DATABASE_URL
+    // debug: true
   },
   PROD: {
     client: 'pg',
