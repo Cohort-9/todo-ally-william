@@ -28,9 +28,12 @@ app.post('/', (req, res) => {
   console.log(userToDo);
   knex('todos')
     .insert(userToDo)
-    .returning()
+    .returning(['title', 'order', 'completed'])
     // .then(console.log('hi'))
-    .then((results) => res.json(results))
+    .then((results) => {
+      console.log(results);
+      res.json(results);
+    })
     .catch(err => console.log(err));
 });
 
