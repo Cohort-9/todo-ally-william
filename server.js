@@ -18,18 +18,33 @@ let toDos = [];
 
 app.get('/', (req, res) =>{
   knex('todos')
-    .select(['title', 'order', 'completed'])
-    .then(results => res.json(results));
+    .select(['title', 'order', 'completed', 'id'])
+    .then(results => {
+      const output = results.map( todoResults => {
+        todoResults.url=`${req.protocol}://${req.get('host')}/${todoResults.id}`;
+        return todoResults;
+      });
+      res.json(output);
+    });
     // res.json(toDos);
+});
+
+app.get('/:id', (req, res) =>{
+  knex('todos')
+    .select(['title', 'order', 'completed', 'id'])
+    .where('id', req.params.id )
+    .then(results => res.json(results[0]))
 });
 
 app.post('/', (req, res) => {
   const userToDo = req.body;
   knex('todos')
     .insert({title: userToDo.title})
-    .returning(['title', 'order', 'completed'])
+    .returning(['title', 'order', 'completed', 'id'])
     // .then(console.log('hi'))
-    .then((results) => {
+    .then((results) => { 
+      results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
+      console.log('results ->', results[0]);
       res.json(results[0]);
     })
     .catch(err => console.log(err));
