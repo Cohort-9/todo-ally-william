@@ -18,27 +18,27 @@ let toDos = [];
 
 app.get('/', (req, res) =>{
   knex('todos')
-    .select()
-    .then(results => res.json(toDos));
+    .select(['title', 'order', 'completed'])
+    .then(results => res.json(results));
     // res.json(toDos);
 });
 
 app.post('/', (req, res) => {
   const userToDo = req.body;
-  console.log(userToDo);
   knex('todos')
-    .insert(userToDo)
+    .insert({title: userToDo.title})
     .returning(['title', 'order', 'completed'])
     // .then(console.log('hi'))
     .then((results) => {
-      console.log(results);
-      res.json(results);
+      res.json(results[0]);
     })
     .catch(err => console.log(err));
 });
 
 app.delete('/', (req, res) => {
-  res.send('delete success');
+  knex('todos')
+    .del()
+    .then(res.send('delete success'));
 });
 
 
