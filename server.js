@@ -39,12 +39,11 @@ app.get('/:id', (req, res) =>{
 app.post('/', (req, res) => {
   const userToDo = req.body;
   knex('todos')
-    .insert({title: userToDo.title})
+    .insert(userToDo)
     .returning(['title', 'order', 'completed', 'id'])
     // .then(console.log('hi'))
     .then((results) => { 
       results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
-      console.log('results ->', results[0]);
       res.json(results[0]);
     })
     .catch(err => console.log(err));
@@ -53,7 +52,31 @@ app.post('/', (req, res) => {
 app.delete('/', (req, res) => {
   knex('todos')
     .del()
-    .then(res.send('delete success'));
+    .then(res.status(204).send('deleted everything'));
+});
+
+app.delete('/:id', (req, res) =>{
+  knex('todos')
+    .where('id', req.params.id)
+    .del()
+    .then(knex('todos').select().where('id', req.params.id))
+    .then(res.sendStatus(204));
+});
+
+app.patch('/:id', (req, res) => {
+  // console.log(req.params.id);
+  knex('todos')
+    .where('id', req.params.id)
+    .update(req.body)
+    .returning(['title', 'order', 'completed', 'id'])
+    .then((results) => { 
+      results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
+      res.json(results[0]);
+    })
+    // .then((results => {
+    //   // console.log(results);
+    //   res.json(results[0]);
+    // }))
 });
 
 
