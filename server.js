@@ -12,12 +12,16 @@ app.use(function(req, res, next) {
 });
 app.use(bodyparser.json());
 
+function urlMaker (results, req) {
+  return `${req.protocol}://${req.get('host')}/${results[0].id}`
+}
+
 app.get('/', (req, res) =>{
   knex('todos')
     .select(['title', 'order', 'completed', 'id'])
     .then(results => {
       const output = results.map( result => {
-        result.url=`${req.protocol}://${req.get('host')}/${result.id}`;
+        results[0].url= urlMaker(results, req);
         return result;
       });
       res.status(200).json(output);
@@ -31,8 +35,11 @@ app.get('/', (req, res) =>{
 app.get('/:id', (req, res) =>{
   knex('todos')
     .select(['title', 'order', 'completed', 'id'])
-    .where('id', req.params.id )
-    .then(results => res.status(200).json(results[0]))
+    .where('id', req.params.id)
+    .then(results => {
+      results[0].url= urlMaker(results, req);
+      res.status(200).json(results[0]);
+    })
     .catch(err => {
       console.error(err);
       res.status(500).send('Internal server error');
@@ -44,7 +51,7 @@ app.post('/', (req, res) => {
     .insert(req.body)
     .returning(['title', 'order', 'completed', 'id'])
     .then((results) => { 
-      results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
+      results[0].url= urlMaker(results, req);
       res.status(201).json(results[0]);
     })
     .catch(err => {
@@ -81,7 +88,7 @@ app.patch('/:id', (req, res) => {
     .update(req.body)
     .returning(['title', 'order', 'completed', 'id'])
     .then((results) => { 
-      results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
+      results[0].url= urlMaker(results, req);
       res.status(200).json(results[0]);
     })
     .catch(err => {
