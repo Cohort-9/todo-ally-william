@@ -9,7 +9,7 @@ var storage = server.storage;
 chai.use(chaiHttp);
 
 
-describe('index page', function() {
+describe('Root should respond with json.', function() {
   it('exists', function(done) {
     chai.request(app)
       .get('/')
