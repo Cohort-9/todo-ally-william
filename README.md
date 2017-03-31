@@ -12,7 +12,7 @@ Our live example of this code is on [http://inexperiencedfearfuleagle.heroku.com
 3. Create a PostgreSQL database for this API to connect to. 
 Suggestions: [elephantsql.com](http://www.elephantsql.com) or run a database locally.
 
-4.  Create the table with this SQL query(??????????) through the postgreSQL shell.  
+4.  Create the table with this SQL query through the postgreSQL shell.  
 `CREATE TABLE todos ( id serial PRIMARY KEY, completed boolean DEFAULT false, "order" integer, title text NOT NULL);`
 
 5. Go to terminal.app (mac) / command prompt (windows) and cd into this repository's directory. Run the following command to create a .env file to store. ``touch .env``
