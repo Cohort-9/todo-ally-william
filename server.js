@@ -1,5 +1,4 @@
 const express = require('express');
-
 const app = express();
 const {DEV, PROD} = require('./config');
 const knex = require('knex')(DEV);
@@ -11,48 +10,57 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
   next();
 });
-// app.use(express.static('public'));
 app.use(bodyparser.json());
-
-let toDos = [];
 
 app.get('/', (req, res) =>{
   knex('todos')
     .select(['title', 'order', 'completed', 'id'])
     .then(results => {
-      const output = results.map( todoResults => {
-        todoResults.url=`${req.protocol}://${req.get('host')}/${todoResults.id}`;
-        return todoResults;
+      const output = results.map( result => {
+        result.url=`${req.protocol}://${req.get('host')}/${result.id}`;
+        return result;
       });
-      res.json(output);
+      res.status(200).json(output);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal server error');
     });
-    // res.json(toDos);
 });
 
 app.get('/:id', (req, res) =>{
   knex('todos')
     .select(['title', 'order', 'completed', 'id'])
     .where('id', req.params.id )
-    .then(results => res.json(results[0]))
+    .then(results => res.status(200).json(results[0]))
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    });
 });
 
 app.post('/', (req, res) => {
-  const userToDo = req.body;
   knex('todos')
-    .insert(userToDo)
+    .insert(req.body)
     .returning(['title', 'order', 'completed', 'id'])
-    // .then(console.log('hi'))
     .then((results) => { 
       results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
-      res.json(results[0]);
+      res.status(201).json(results[0]);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    });
 });
 
 app.delete('/', (req, res) => {
   knex('todos')
     .del()
-    .then(res.status(204).send('deleted everything'));
+    .then(res.sendStatus(204))
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    });
 });
 
 app.delete('/:id', (req, res) =>{
@@ -60,58 +68,29 @@ app.delete('/:id', (req, res) =>{
     .where('id', req.params.id)
     .del()
     .then(knex('todos').select().where('id', req.params.id))
-    .then(res.sendStatus(204));
+    .then(res.sendStatus(204))
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    });
 });
 
 app.patch('/:id', (req, res) => {
-  // console.log(req.params.id);
   knex('todos')
     .where('id', req.params.id)
     .update(req.body)
     .returning(['title', 'order', 'completed', 'id'])
     .then((results) => { 
       results[0].url= `${req.protocol}://${req.get('host')}/${results[0].id}`;
-      res.json(results[0]);
+      res.status(200).json(results[0]);
     })
-    // .then((results => {
-    //   // console.log(results);
-    //   res.json(results[0]);
-    // }))
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    });
 });
 
-
-// function runServer(databaseUrl=DATABASE_URL, port=PORT) {
-//   return new Promise((resolve, reject) => {
-//     mongoose.connect(databaseUrl, err => {
-//       if (err) {
-//         return reject(err);
-//       }
-//       server = app.listen(port, () => {
-//         console.log(`Your app is listening on port ${port}`);
-//         resolve();
-//       })
-//       .on('error', err => {
-//         mongoose.disconnect();
-//         reject(err);
-//       });
-//     });
-//   });
-// }
-// // this function closes the server, and returns a promise. we'll
-// // use it in our integration tests later.
-// function closeServer() {
-//   return mongoose.disconnect().then(() => {
-//      return new Promise((resolve, reject) => {
-//        console.log('Closing server');
-//        server.close(err => {
-//            if (err) {
-//                return reject(err);
-//            }
-//            resolve();
-//        });
-//      });
-//   });
-// }
+app.use(express.static('public'));
 
 app.listen(process.env.PORT || 8080, () => {
 	console.log(`Your app is listening on port ${process.env.PORT || 8080}`)});
