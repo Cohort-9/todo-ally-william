@@ -4,7 +4,7 @@ const {DEV, PROD} = require('./config');
 const knex = require('knex')(DEV);
 const bodyparser = require('body-parser');
 
-app.use(function(req, res, next) {
+app.use(function(req, res, next) { //addresses CORS issues, enables cross-domain CRUD access
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
@@ -13,7 +13,7 @@ app.use(function(req, res, next) {
 app.use(bodyparser.json());
 
 function urlMaker (results, req) {
-  return `${req.protocol}://${req.get('host')}/${results[0].id}`
+  return `${req.protocol}://${req.get('host')}/${results[0].id}` //returns server URL with database id appended as a param. NOT STORED IN DB
 }
 
 app.get('/', (req, res) =>{
@@ -32,7 +32,7 @@ app.get('/', (req, res) =>{
     });
 });
 
-app.get('/:id', (req, res) =>{
+app.get('/:id', (req, res) =>{ //relies on URLs created by function urlMaker
   knex('todos')
     .select(['title', 'order', 'completed', 'id'])
     .where('id', req.params.id)
@@ -74,7 +74,10 @@ app.delete('/:id', (req, res) =>{
   knex('todos')
     .where('id', req.params.id)
     .del()
-    .then(knex('todos').select().where('id', req.params.id))
+    .then(
+      knex('todos')
+      .select()
+      .where('id', req.params.id))
     .then(res.sendStatus(204))
     .catch(err => {
       console.error(err);
